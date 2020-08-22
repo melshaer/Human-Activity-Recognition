@@ -58,6 +58,16 @@ def get_image_id(activity_name):
     return image_id_list
 
 
+def get_image_id_from_filename(filename):
+    single_image = [entry for entry in data['images'] if entry['file_name'] == filename]
+    return single_image[0]['id']
+
+
+def get_image_filename_from_id(image_id):
+    single_image = [entry for entry in data['images'] if entry['id'] == image_id]
+    return single_image[0]['file_name']
+
+
 # Display an example image with all annotated joints
 def display(image_id):
     # Filter data to image_id only
@@ -77,7 +87,11 @@ def display(image_id):
         # Extract and display annotated points
         x = single_annot_image_data[p]['keypoints_x']
         y = single_annot_image_data[p]['keypoints_y']
-        plt.scatter(x, y, c='r')
+        vis = single_annot_image_data[p]['keypoints_vis']
+        # Extract visible keypoints only for display
+        x_dsply= [coord for ind, coord in enumerate(x) if vis[ind] == 1]
+        y_dsply= [coord for ind, coord in enumerate(y) if vis[ind] == 1]
+        plt.scatter(x_dsply, y_dsply, c='r')
         # Extract and display bounding boxes
         bbox = single_annot_image_data[p]['bbox']
         rect = patches.Rectangle((bbox[0], bbox[1]), bbox[2], bbox[3], linewidth=1, edgecolor='r', facecolor='none')
